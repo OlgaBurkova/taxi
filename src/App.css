@@ -1,0 +1,27 @@
+#root {
+  height: 100vh;
+  background-size: cover;
+  background-image: url(assets/login-background.jpg);
+}
+
+header {
+  color: #fff;
+}
+
+ul {
+  margin: 0;
+}
+
+li {
+  display: inline;
+  margin-right: 5px;
+  padding: 3px;
+}
+
+form {
+  border-radius: 4px;
+  background-color: #fff;
+  width: 340px;
+  height: 150px;
+  padding: 44px 60px;
+}

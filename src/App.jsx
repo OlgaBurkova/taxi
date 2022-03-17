@@ -1,86 +1,79 @@
 import React from "react";
-import { Profile } from "./Profile";
+import { ProfileWithAuth } from "./Profile";
+import { HomeWithAuth } from "./Home";
 import { Map } from "./Map";
+import { withAuth } from "./AuthContext";
+import PropTypes from 'prop-types';
 import "./App.css";
 
 const PAGES = {
-  map: <Map />,
-  profile: <Profile />
+  home: (props) => <HomeWithAuth {...props} />,
+  map: (props) => <Map {...props} />,
+  profile: (props) => <ProfileWithAuth {...props} />,
 };
 
 class App extends React.Component {
-  state = { currentPage: "map", isLoggedIn: false };
+  state = { currentPage: "home" };
 
   navigateTo = (page) => {
-    this.setState({ currentPage: page });
+    if (this.props.isLoggedIn) {
+      this.setState({ currentPage: page });
+    } else {
+      this.setState({ currentPage: "home" });
+    }
   };
 
   render() {
-    const isLoggedIn = this.state.isLoggedIn;
-    console.log(isLoggedIn);
+    const isLoggedIn = this.props.isLoggedIn;
     return (
       <>
         {isLoggedIn ? (
-          <>
-            <header>
-              <nav>
-                <ul>
-                  <li>
-                    <a
-                      onClick={() => {
-                        this.navigateTo("map");
-                      }}
-                    >
-                      Карта
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      onClick={() => {
-                        this.navigateTo("profile");
-                      }}
-                    >
-                      Профиль
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      onClick={() => {
-                        this.setState({ isLoggedIn: false });
-                      }}
-                    >
-                      Выйти
-                    </a>
-                  </li>
-                </ul>
-              </nav>
-            </header>
-            <main data-testid="container">
-              <section>{PAGES[this.state.currentPage]}</section>
-            </main>
-          </>
-        ) : (
-          <form>
-            <span>Новый пользователь? Зарегистрируйтесь</span>
-            <br></br><br></br>
-            <label htmlFor="email">Email:</label>
-            <input id="email" type="email" name="email" size="28" />
-            <label htmlFor="password">Password:</label>
-            <input id="password" type="password" name="password" size="28" />
-            <br></br><br></br>
-            <button
-              onClick={() => {
-                this.setState({ isLoggedIn: true });
-                this.navigateTo("map");
-              }}
-            >
-              Войти
-            </button>
-          </form>
-        )}
+        <header>
+          <nav>
+            <ul>
+              <li>
+                <button
+                  onClick={() => {
+                    this.navigateTo("home");
+                  }}
+                >
+                  Home
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => {
+                    this.navigateTo("map");
+                  }}
+                >
+                  Map
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => {
+                    this.navigateTo("profile");
+                  }}
+                >
+                  Profile
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </header>
+        ) : null}
+        <main data-testid="container">
+          <section>
+            {PAGES[this.state.currentPage]({ navigate: this.navigateTo })}
+          </section>
+        </main>
       </>
     );
   }
 }
 
-export default App;
+App.propTypes = {
+  isLoggedIn: PropTypes.bool
+};
+
+export default withAuth(App);

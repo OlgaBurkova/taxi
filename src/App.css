@@ -21,7 +21,13 @@ li {
 form {
   border-radius: 4px;
   background-color: #fff;
-  width: 340px;
+  width: 320px;
   height: 150px;
   padding: 44px 60px;
+}
+
+#signUpButton {
+  color: -webkit-link;
+  cursor: pointer;
+  text-decoration: underline;
 }

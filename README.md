@@ -5,4 +5,4 @@
 `npm test` для тестирования
 
 Для тестирования:
-test@yandex.ru/password
+test@test.com/123123

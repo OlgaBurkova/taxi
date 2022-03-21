@@ -1,23 +1,31 @@
 import React, { Component } from "react";
-import {PropTypes} from 'prop-types'
-import { withAuth } from "./AuthContext";
+import { authenticate } from "./actions";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { Navigate } from "react-router-dom";
+import icon from './assets/icon.svg' ;
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Input from '@mui/material/Input';
+import Button from '@mui/material/Button';
 
 export class Home extends Component {
   state = { isNewUser: false };
-
-  goToProfile = (event) => {
-    event.preventDefault();
-    this.props.navigate("profile");
-  };
 
   showSignUp = () => {
     this.setState({ isNewUser: true });
   };
 
+  hideSignUp = () => {
+    this.setState({ isNewUser: false });
+  };
+
   authenticate = (event) => {
     event.preventDefault();
     const { email, password } = event.target;
-    this.props.logIn(email.value, password.value);
+    localStorage.setItem('email', email.value);
+    localStorage.setItem('password', password.value);
+    this.props.authenticate(email.value, password.value);
   };
 
   render() {
@@ -25,44 +33,59 @@ export class Home extends Component {
     return (
       <>
         {this.props.isLoggedIn ? (
-          <p>
-            You are logged in{" "}
-            <button onClick={this.goToProfile}>
-              go to profile
-            </button>
-          </p>
+          <Navigate to='/profile' />
         ) : (
           <>
             {!isNewUser ? (
-              <form onSubmit={this.authenticate}>
-                <span>
-                  Are you new here?&nbsp;
-                  <a id="signUpButton" onClick={this.showSignUp}>
-                    Sign up
-                  </a>
-                </span>
-                <br></br><br></br>
-                <label htmlFor="email">Email:</label>
-                <input id="email" type="email" name="email" size="28" />
-                <label htmlFor="password">Password:</label>
-                <input id="password" type="password" name="password" size="28" />
-                <button type="submit">Log in</button>
-              </form>
+              <Box sx={{ height: '100vh' }}>
+                <Grid container sx={{ height: '100vh' }} alignItems="center">
+                  <Grid item xs={6}>
+                    <img id="iconStartPage" src={icon} />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <form onSubmit={this.authenticate}>
+                      <h1>Войти</h1>
+                      <span>
+                        Новый пользователь?&nbsp;
+                        <a id="signUpButton" onClick={this.showSignUp}>
+                          Зарегистрируйтесь
+                        </a>
+                      </span>
+                      <br></br><br></br>
+                      <Input id="outlined-basic" type="email" name="email" placeholder="Адрес электронной почты" />
+                      <Input id="outlined-basic" type="password" name="password" placeholder="Пароль" />
+                      <br></br><br></br>
+                      <Button type="submit" variant="contained">Войти</Button>
+                    </form>
+                  </Grid>
+                </Grid>
+              </Box>
             ) : (
-              <form onSubmit={this.authenticate}>
-                <label htmlFor="username">Name:</label>
-                <input id="username" />
-                <br></br>
-                <label htmlFor="userphone">Phone:</label>
-                <input id="userphone" />
-                <br></br>
-                <label htmlFor="email">Email:</label>
-                <input id="email" type="email" name="email" size="28" />
-                <br></br>
-                <label htmlFor="password">Password:</label>
-                <input id="password" type="password" name="password" size="28" />
-                <button type="submit">Save</button>
-              </form>
+              <Box sx={{ height: '100vh' }}>
+                <Grid container sx={{ height: '100vh' }} alignItems="center">
+                  <Grid item xs={6}>
+                    <img id="iconStartPage" src={icon} />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <form onSubmit={this.authenticate}>
+                      <h1>Регистрация</h1>
+                      <span>
+                        Уже зарегистрированы?&nbsp;
+                        <a id="signUpButton" onClick={this.hideSignUp}>
+                          Войти
+                        </a>
+                      </span>
+                      <br></br><br></br>
+                      <Input id="outlined-basic" type="email" name="email" placeholder="Адрес электронной почты" />
+                      <Input id="outlined-basic" type="name" name="name" placeholder="Имя" />
+                      <Input id="outlined-basic" type="surname" name="surname" placeholder="Фамилия" />
+                      <Input id="outlined-basic" type="password" name="password" placeholder="Пароль" />
+                      <br></br><br></br>
+                      <Button type="submit" variant="contained">Войти</Button>
+                    </form>
+                  </Grid>
+                </Grid>
+              </Box>
             )}
           </>
         )}
@@ -74,7 +97,9 @@ export class Home extends Component {
 Home.propTypes = {
   isLoggedIn: PropTypes.bool,
   logIn: PropTypes.func,
-  navigate: PropTypes.func,
 };
 
-export const HomeWithAuth = withAuth(Home);
+export const HomeWithConnect = connect(
+  (state) => ({ isLoggedIn: state.auth.isLoggedIn }),
+  { authenticate }
+)(Home);

@@ -22,7 +22,6 @@ form {
   border-radius: 4px;
   background-color: #fff;
   width: 320px;
-  height: 150px;
   padding: 44px 60px;
 }
 
@@ -30,4 +29,9 @@ form {
   color: -webkit-link;
   cursor: pointer;
   text-decoration: underline;
+}
+
+#iconStartPage {
+  max-width: 160px;
+  margin-left: 50%;
 }
